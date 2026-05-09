@@ -39,23 +39,3 @@ The borrowing history is implemented using a Stack. When a book is borrowed, it 
 
 This follows the LIFO principle, which means Last-In, First-Out.
 
-## My Contribution: Search Logic Expert
-
-My role in this project is Search Logic Expert.
-
-I implemented the recursive search logic in `BookBST.java`. The search starts from the root node of the BST and compares the target ISBN with the current node's ISBN.
-
-The logic works as follows:
-
-```text
-If the current node is null:
-    return null
-
-If the current node's ISBN matches the target ISBN:
-    return the current book
-
-If the target ISBN is smaller:
-    search the left subtree
-
-If the target ISBN is larger:
-    search the right subtree
