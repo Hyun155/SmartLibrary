@@ -1,3 +1,9 @@
+/**
+ * Represents a single book record in the library catalogue.
+ *
+ * Each book stores its ISBN, title, and author, plus left/right links so the
+ * same object can be used as a node inside the binary search tree.
+ */
 public class Book {
     private long isbn;
     private String title;
@@ -5,6 +11,9 @@ public class Book {
     private Book left;
     private Book right;
 
+    /**
+     * Creates a new book node with no child links attached yet.
+     */
     public Book(long isbn, String title, String author) {
         this.isbn = isbn;
         this.title = title;
@@ -13,7 +22,7 @@ public class Book {
         this.right = null;
     }
 
-    // Getters and Setters
+    // Accessors used by the BST and console layer.
     public long getIsbn() { return isbn; }
     public String getTitle() { return title; }
     public String getAuthor() { return author; }

@@ -1,10 +1,19 @@
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
+/**
+ * Console controller for the Smart Library application.
+ *
+ * This class connects the BST catalogue and the borrowing history stack,
+ * then exposes all user actions through a simple menu-driven interface.
+ */
 public class SmartLibrary implements LibraryADT {
     private final BookBST catalogue;
     private final BorrowStack history;
 
+    /**
+     * Sets up the in-memory catalogue and borrowing history for a fresh session.
+     */
     public SmartLibrary() {
         this.catalogue = new BookBST();
         this.history = new BorrowStack();
@@ -32,17 +41,17 @@ public class SmartLibrary implements LibraryADT {
 
     @Override
     public void borrowBook(long isbn) {
-        // Step 1: Search the BST for the book record
+        // Search first so only available books can be borrowed.
         Book bookToBorrow = catalogue.search(isbn);
         
         if (bookToBorrow != null) {
-            // Create a clean detached copy of the book metadata for history tracking
+            // Store a detached copy so history remains valid after the BST node is removed.
             Book historyRecord = new Book(bookToBorrow.getIsbn(), bookToBorrow.getTitle(), bookToBorrow.getAuthor());
             
-            // Step 2: Add it to the LIFO borrowing history stack
+            // Push to the stack so the most recent borrow appears first in history.
             history.borrow(historyRecord);
             
-            // Step 3: Remove it from the available catalogue
+            // Remove the borrowed copy from the available catalogue.
             catalogue.delete(isbn);
             
             System.out.println("Success: You have borrowed '" + historyRecord.getTitle() + "'.");
@@ -57,10 +66,12 @@ public class SmartLibrary implements LibraryADT {
     }
 
     public void listAllBooks() {
+        // In-order traversal prints all available books sorted by ISBN.
         catalogue.printAllBooks();
     }
 
     public void returnBook(long isbn) {
+        // Search the history stack and restore the matching book back to the catalogue.
         Book returnedBook = history.returnBook(isbn);
 
         if (returnedBook == null) {
@@ -79,6 +90,7 @@ public class SmartLibrary implements LibraryADT {
 
     // --- CONSOLE INTERFACE ENGINE ---
     public void runMenu() {
+        // Keep prompting until the user selects Exit.
         Scanner sc = new Scanner(System.in);
         while (true) {
             printMenu();
@@ -101,17 +113,19 @@ public class SmartLibrary implements LibraryADT {
     }
 
     private void printMenu() {
+        // Menu numbering matches the switch-case in handleChoice().
         System.out.println("\n--- SmartLibrary Menu ---");
         System.out.println("1. Add Book");
-        System.out.println("2. Search (BST)");
-        System.out.println("3. Borrow (Stack)");
-        System.out.println("4. History");
+        System.out.println("2. Search Book");
+        System.out.println("3. Borrow Book");
+        System.out.println("4. View Borrowing History");
         System.out.println("5. List All Books");
         System.out.println("6. Return Book");
         System.out.println("7. Exit");
     }
 
     private void handleChoice(int choice, Scanner sc) {
+        // Each branch validates input before calling the relevant operation.
         switch (choice) {
             case 1:
                 try {
