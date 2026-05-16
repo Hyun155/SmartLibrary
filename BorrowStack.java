@@ -1,20 +1,5 @@
 import java.util.Stack;
 
-class Book {
-    private final String title;
-    private final String author;
-
-    Book(String title, String author) {
-        this.title = title;
-        this.author = author;
-    }
-
-    @Override
-    public String toString() {
-        return title + " by " + author;
-    }
-}
-
 public class BorrowStack {
     private final Stack<Book> borrowedBooks = new Stack<>();
 
@@ -22,7 +7,36 @@ public class BorrowStack {
         borrowedBooks.push(book);
     }
 
+    public Book returnBook(long isbn) {
+        Stack<Book> temporaryStack = new Stack<>();
+
+        while (!borrowedBooks.isEmpty()) {
+            Book currentBook = borrowedBooks.pop();
+
+            if (currentBook.getIsbn() == isbn) {
+                while (!temporaryStack.isEmpty()) {
+                    borrowedBooks.push(temporaryStack.pop());
+                }
+
+                return currentBook;
+            }
+
+            temporaryStack.push(currentBook);
+        }
+
+        while (!temporaryStack.isEmpty()) {
+            borrowedBooks.push(temporaryStack.pop());
+        }
+
+        return null;
+    }
+
     public void show() {
+        if (borrowedBooks.isEmpty()) {
+            System.out.println("No books have been borrowed yet.");
+            return;
+        }
+
         System.out.println("Borrowed Books (most recent first):");
         for (int index = borrowedBooks.size() - 1; index >= 0; index--) {
             System.out.println((borrowedBooks.size() - index) + ". " + borrowedBooks.get(index));
@@ -31,9 +45,9 @@ public class BorrowStack {
 
     public static void main(String[] args) {
         BorrowStack history = new BorrowStack();
-        history.borrow(new Book("Clean Code", "Robert C. Martin"));
-        history.borrow(new Book("Effective Java", "Joshua Bloch"));
-        history.borrow(new Book("Design Patterns", "Erich Gamma"));
+        history.borrow(new Book(1L, "Clean Code", "Robert C. Martin"));
+        history.borrow(new Book(2L, "Effective Java", "Joshua Bloch"));
+        history.borrow(new Book(3L, "Design Patterns", "Erich Gamma"));
 
         history.show();
     }

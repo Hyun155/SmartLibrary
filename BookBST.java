@@ -1,5 +1,3 @@
-import Book;
-
 public class BookBST {
     private Book root;
 
@@ -44,6 +42,16 @@ public class BookBST {
      */
     public Book search(long isbn) {
         return searchRecursive(root, isbn);
+    }
+
+    public void printAllBooks() {
+        if (root == null) {
+            System.out.println("No books are currently available in the catalogue.");
+            return;
+        }
+
+        System.out.println("Available Books (ISBN order):");
+        printAllBooksRecursive(root);
     }
 
     /*
@@ -128,5 +136,15 @@ public class BookBST {
         }
 
         return current;
+    }
+
+    private void printAllBooksRecursive(Book current) {
+        if (current == null) {
+            return;
+        }
+
+        printAllBooksRecursive(current.getLeft());
+        System.out.println(current);
+        printAllBooksRecursive(current.getRight());
     }
 }
